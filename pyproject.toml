@@ -1,0 +1,12 @@
+[project]
+name = "jev-cogsec"
+version = "0.1.0"
+description = "Spike: Jev as a CogSec gate for indirect prompt injection in Google ADK agents"
+requires-python = ">=3.11"
+dependencies = [
+  "google-adk[eval]>=2.6.0",
+  "typesafe-sdk",
+]
+
+[tool.uv]
+dev-dependencies = []
