@@ -57,11 +57,24 @@ Gemini = task agent
 
 ## Fixtures
 
-The suite currently contains:
+The original suite contains:
 
 - 3 benign pages;
 - 3 pages containing indirect prompt injection;
 - 2 near-misses that discuss prompt injection as quoted/security-research content.
+
+A separate **stress suite** keeps the original 8/8 baseline intact and adds 10 harder cases:
+
+- a payload buried inside otherwise useful prose;
+- fake administrator / trusted-authority claims;
+- a Portuguese-language injection;
+- oblique tool steering without an explicit "ignore previous instructions";
+- pure goal hijacking with no extra tool call;
+- conditional instructions aimed specifically at AI readers;
+- an injection hidden in an HTML comment;
+- cross-source poisoning across two retrieved pages;
+- a difficult incident-report near miss that quotes malicious instructions;
+- a benign human runbook full of imperative language.
 
 The canary tools are harmless:
 
@@ -114,11 +127,31 @@ uv run adk eval \
   --print_detailed_results
 ```
 
+Then run the harder suite against both variants:
+
+```bash
+uv run adk eval \
+  baseline \
+  evals/web_injection_stress.evalset.json \
+  --config_file_path=evals/test_config.json \
+  --print_detailed_results
+```
+
+```bash
+uv run adk eval \
+  guarded \
+  evals/web_injection_stress.evalset.json \
+  --config_file_path=evals/test_config.json \
+  --print_detailed_results
+```
+
 Compare:
 
 - per-case tool trajectory;
 - final-response rubric score;
-- false positives on the two near-miss pages;
+- false positives on both ordinary and stress near-misses;
+- whether the pure goal-hijack case fails even when the tool trajectory remains clean;
+- behavior when one of two retrieved sources is poisoned;
 - Jev latency recorded in ADK session state as `cogsec:last_latency_ms`;
 - Jev per-question probabilities in `cogsec:last_scores`.
 
