@@ -2,6 +2,10 @@
 
 from collections.abc import Callable
 
+from dotenv import load_dotenv
+
+load_dotenv()
+
 from google.adk.agents import LlmAgent
 
 from common.tools import fetch_web_page, read_private_note, send_message
